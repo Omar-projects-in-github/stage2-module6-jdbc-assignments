@@ -5,38 +5,51 @@ import javax.sql.DataSource;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 @Getter
 @Setter
 public class CustomDataSource implements DataSource {
     private static volatile CustomDataSource instance;
-    private final String driver = "org.postgresql.Driver";
-    private final String url = "jdbc:postgresql://localhost:5432/myfirstdb";
-    private final String name = "postgres";
-    private final String password = "postgresql";
+    private final String driver;
+    private final String url;
+    private final String name;
+    private final String password;
 
     private PrintWriter logWriter = null;
     private int loginTimeout = 0;
 
-    private CustomDataSource() {
-        try {
-            Class.forName(driver);
-        }
-        catch (ClassNotFoundException exception) {
-            exception.printStackTrace();
-        }
+    private CustomDataSource(String driver, String url, String password, String name) {
+        this.driver = driver;
+        this.url = url;
+        this.password = password;
+        this.name = name;
     }
 
     public static CustomDataSource getInstance() {
         if (instance == null) {
             synchronized (CustomDataSource.class) {
                 if (instance == null) {
-                    instance = new CustomDataSource();
+                    Properties properties = new Properties();
+                    try {
+                        properties.load(CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties"));
+                        instance = new CustomDataSource(
+                                properties.getProperty("postgres.driver"),
+                                properties.getProperty("postgres.url"),
+                                properties.getProperty("postgres.password"),
+                                properties.getProperty("postgres.name")
+                        );
+                    }
+                    catch (IOException exception) {
+                        exception.printStackTrace();
+                    }
+
                 }
             }
         }

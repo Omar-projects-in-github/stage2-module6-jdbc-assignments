@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.logging.Logger;
@@ -46,12 +45,12 @@ public class CustomDataSource implements DataSource {
 
     @Override
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, name, password);
+        return new CustomConnector().getConnection(url, name, password);
     }
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        return DriverManager.getConnection(url, username, password);
+        return new CustomConnector().getConnection(url, username, password);
     }
 
     public PrintWriter getLogWriter() throws SQLException {

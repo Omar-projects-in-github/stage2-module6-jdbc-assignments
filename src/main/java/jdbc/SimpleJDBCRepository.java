@@ -118,10 +118,8 @@ public class SimpleJDBCRepository {
             ps.setString(2, user.getLastName());
             ps.setInt(3, user.getAge());
             ps.setLong(4, user.getId());
-            int rowsAffected = ps.executeUpdate();
+            ps.executeUpdate();
 
-            if (rowsAffected > 0)
-                return findUserById(user.getId());
         }
         catch (SQLException exception) {
             exception.printStackTrace();
@@ -129,7 +127,7 @@ public class SimpleJDBCRepository {
         finally {
             closeResources();
         }
-        return null;
+        return findUserById(user.getId());
     }
 
     public void deleteUser(Long userId) {

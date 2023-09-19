@@ -121,7 +121,7 @@ public class SimpleJDBCRepository {
             int rowsAffected = ps.executeUpdate();
 
             if (rowsAffected > 0)
-                return user;
+                return findUserById(user.getId());
         }
         catch (SQLException exception) {
             exception.printStackTrace();

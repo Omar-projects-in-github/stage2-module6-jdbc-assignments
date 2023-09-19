@@ -127,7 +127,7 @@ public class SimpleJDBCRepository {
         finally {
             closeResources();
         }
-        return findUserById(user.getId());
+        return user;
     }
 
     public void deleteUser(Long userId) {
